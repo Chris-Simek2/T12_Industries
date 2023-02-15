@@ -1,6 +1,8 @@
 // Basic demo for accelerometer/gyro readings from Adafruit ISM330DHCX
 
 #include <Adafruit_ISM330DHCX.h>
+#include <Arduino.h>
+#include <math.h>
 
 // For SPI mode, we need a CS pin
 #define LSM_CS 10
@@ -148,37 +150,60 @@ void setup(void) {
   ism330dhcx.configInt2(false, true, false); // gyro DRDY on INT2
 }
 
+float zRot;
+
 void loop() {
   //  /* Get a new normalized sensor event */
   sensors_event_t accel;
   sensors_event_t gyro;
   sensors_event_t temp;
+
   ism330dhcx.getEvent(&accel, &gyro, &temp);
 
-  Serial.print("\t\tTemperature ");
-  Serial.print(temp.temperature);
-  Serial.println(" deg C");
+  //Serial.print("\t\tTemperature ");
+  //Serial.print(temp.temperature);
+  //Serial.print(" deg C");
+  //Serial.print("\t\t");
+  //Serial.print(temp.temperature*9/4+32);
+  //Serial.println(" deg F");
+
 
   /* Display the results (acceleration is measured in m/s^2) */
-  Serial.print("\t\tAccel X: ");
-  Serial.print(accel.acceleration.x);
-  Serial.print(" \tY: ");
-  Serial.print(accel.acceleration.y);
-  Serial.print(" \tZ: ");
-  Serial.print(accel.acceleration.z);
-  Serial.println(" m/s^2 ");
+  //Serial.print("\t\tAccel X: ");
+  //Serial.print(accel.acceleration.x);
+  //Serial.print(" \tY: ");
+  //Serial.print(accel.acceleration.y);
+  //Serial.print(" \tZ: ");
+  //Serial.print(accel.acceleration.z);
+  //Serial.println(" m/s^2 ");
 
-  /* Display the results (rotation is measured in rad/s) */
-  Serial.print("\t\tGyro X: ");
-  Serial.print(gyro.gyro.x);
-  Serial.print(" \tY: ");
-  Serial.print(gyro.gyro.y);
-  Serial.print(" \tZ: ");
-  Serial.print(gyro.gyro.z);
-  Serial.println(" radians/s ");
+
+
+  
+  /* Display the results (rotation is measured in degrees) */
+  //Serial.print("\t\tGyro X: ");
+  //Serial.print(gyro.gyro.x*180/PI);
+  //Serial.print(" \tY: ");
+  //Serial.print(gyro.gyro.y*180/PI);
+  Serial.print(" \t\tZ: ");
+  Serial.print(gyro.gyro.z*180/PI);
+  Serial.println(" Degrees ");
   Serial.println();
 
-  delay(100);
+  zRot = gyro.gyro.z*0.25 + zRot + 0.00845*0.25;
+  Serial.println();
+  Serial.print("\t\tUpdated Rotation: ");
+  Serial.print(zRot*180/PI);
+  Serial.println(" Degrees ");
+  Serial.println();
+
+  delay(250);
+
+
+
+  
+
+  
 
   //  // serial plotter friendly format
 
