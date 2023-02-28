@@ -150,7 +150,17 @@ void setup(void) {
   ism330dhcx.configInt2(false, true, false); // gyro DRDY on INT2
 }
 
+
+float acc_x;
+float acc_y;
+float acc_total_magnitude;
+float acc_total_direction;
 float zRot;
+//float xRot;
+//float yRot;
+float errorZ;
+//float errorX;
+//float errorY;
 
 void loop() {
   //  /* Get a new normalized sensor event */
@@ -160,64 +170,71 @@ void loop() {
 
   ism330dhcx.getEvent(&accel, &gyro, &temp);
 
-  //Serial.print("\t\tTemperature ");
-  //Serial.print(temp.temperature);
-  //Serial.print(" deg C");
-  //Serial.print("\t\t");
-  //Serial.print(temp.temperature*9/4+32);
-  //Serial.println(" deg F");
+  Serial.print("\t\tTemperature ");
+  Serial.print(temp.temperature);
+  Serial.print(" deg C");
+  Serial.print("\t\t");
+  Serial.print(temp.temperature*9/4+32);
+  Serial.println(" deg F");
 
 
   /* Display the results (acceleration is measured in m/s^2) */
-  //Serial.print("\t\tAccel X: ");
-  //Serial.print(accel.acceleration.x);
-  //Serial.print(" \tY: ");
-  //Serial.print(accel.acceleration.y);
-  //Serial.print(" \tZ: ");
-  //Serial.print(accel.acceleration.z);
-  //Serial.println(" m/s^2 ");
+  Serial.print("\t\tAccel X: ");
+  Serial.print(accel.acceleration.x);
+  Serial.print(" \tY: ");
+  Serial.print(accel.acceleration.y);
+  Serial.print(" \tZ: ");
+  Serial.print(accel.acceleration.z);
+  Serial.println(" m/s^2 ");
+  
+  acc_x = accel.acceleration.x;
+  acc_y = accel.acceleration.y;
+  //acc_z = accel.acceleration.z;
+  
 
+  acc_total_magnitude = sqrt((acc_x*acc_x)+(acc_y*acc_y));  //Calculate the total accelerometer vector
+  acc_total_direction = atan(acc_y/acc_x);
+  Serial.print("\t\tAccel Mag: ");
+  Serial.print(acc_total_magnitude);
+  Serial.println(" m/s^2 ");
+  Serial.print("\t\tAccel Dir: ");
+  Serial.print(acc_total_direction);
+  Serial.println(" Degrees ");
 
 
   
   /* Display the results (rotation is measured in degrees) */
-  //Serial.print("\t\tGyro X: ");
-  //Serial.print(gyro.gyro.x*180/PI);
-  //Serial.print(" \tY: ");
-  //Serial.print(gyro.gyro.y*180/PI);
-  Serial.print(" \t\tZ: ");
+  Serial.print("\t\tGyro X: ");
+  Serial.print(gyro.gyro.x*180/PI);
+  Serial.print(" \tY: ");
+  Serial.print(gyro.gyro.y*180/PI);
+  Serial.print(" \tZ: ");
   Serial.print(gyro.gyro.z*180/PI);
   Serial.println(" Degrees ");
   Serial.println();
 
-  zRot = gyro.gyro.z*0.25 + zRot + 0.00845*0.25;
+
+  errorZ = 0.00845;                                //0.00845 deg in positive direction = +0.48 in Rad to compesate
+  //errorX = -0.00366;                               //0.00366 deg in negative direction = -0.21 in Rad to compesate
+  //errorY = 0.01404;                                //0.01404 deg in positive direction = +0.80 in Rad to compesate
+  zRot = gyro.gyro.z*0.25 + zRot + errorZ*0.25;   // 
+  //xRot = gyro.gyro.x*0.25 + xRot + errorX*0.25; 
+  //yRot = gyro.gyro.y*0.25 + yRot + errorY*0.25;    
+  
   Serial.println();
-  Serial.print("\t\tUpdated Rotation: ");
+  Serial.print("\t\tUpdated Z Rotation: ");
   Serial.print(zRot*180/PI);
   Serial.println(" Degrees ");
-  Serial.println();
+  
+  // X and Y Rotation is not too important right now because we care more about the rotation of the head.
+  //Serial.print("\t\tUpdated X Rotation: ");
+  //Serial.print(xRot*180/PI);
+  //Serial.println(" Degrees ");
+  //Serial.print("\t\tUpdated Y Rotation: ");
+  //Serial.print(yRot*180/PI);
+  //Serial.println(" Degrees ");
+  //Serial.println();
 
+   
   delay(250);
-
-
-
-  
-
-  
-
-  //  // serial plotter friendly format
-
-  //  Serial.print(temp.temperature);
-  //  Serial.print(",");
-
-  //  Serial.print(accel.acceleration.x);
-  //  Serial.print(","); Serial.print(accel.acceleration.y);
-  //  Serial.print(","); Serial.print(accel.acceleration.z);
-  //  Serial.print(",");
-
-  // Serial.print(gyro.gyro.x);
-  // Serial.print(","); Serial.print(gyro.gyro.y);
-  // Serial.print(","); Serial.print(gyro.gyro.z);
-  // Serial.println();
-  //  delayMicroseconds(10000);
 }
