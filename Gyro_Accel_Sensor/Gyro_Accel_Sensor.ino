@@ -153,6 +153,7 @@ void setup(void) {
 
 float acc_x;
 float acc_y;
+//float acc_z;
 float acc_total_magnitude;
 float acc_total_direction;
 float zRot;
@@ -163,6 +164,7 @@ float errorZ;
 //float errorY;
 float velocity;
 float time;
+//float xoffset;
 
 void loop() {
   //  /* Get a new normalized sensor event */
@@ -178,10 +180,19 @@ void loop() {
   //Serial.print("\t\t");
   //Serial.print(temp.temperature*9/4+32);
   //Serial.println(" deg F");
-
-  acc_x = accel.acceleration.x - 0.08;   // The 0.13 is to offset error
-  acc_y = accel.acceleration.y + 0.36;   // The 0.35 is to ofset error
+  
+  acc_x = accel.acceleration.x;  
+  acc_y = accel.acceleration.y;  
   //acc_z = accel.acceleration.z;
+  
+  //*****************************************//
+  //Calculate for acceleration due to gravity//
+  //*****************************************//
+  //yRot = gyro.gyro.y*0.25 + yRot + errorY*0.25; 
+  //if (acc_z < 9.0){
+      //xoffset=9.88*sin(yRot*180/PI);
+      //acc_x = acc_x - xoffset;    
+  //}
 
   /* Display the results (acceleration is measured in m/s^2) */
   Serial.print("\t\tAccel X: ");
@@ -190,16 +201,20 @@ void loop() {
   Serial.print(" \tY: ");
   //Serial.print(accel.acceleration.y);
   Serial.print(acc_y);
-  //Serial.print(" \tZ: ");
-  //Serial.print(accel.acceleration.z);
-  //Serial.println(" m/s^2 ");  
+  Serial.print(" \tZ: ");
+  Serial.print(accel.acceleration.z);
+  Serial.println(" m/s^2 ");  
 
-//Calculating acceleration and direction
+//*****************************************//
+//Calculating acceleration and direction//
+//*****************************************//
   acc_total_magnitude = sqrt((acc_x*acc_x)+(acc_y*acc_y));  //Calculate the total accelerometer vector
   acc_total_direction = atan(acc_y/acc_x);                  //Result comes out in Radians
   acc_total_direction = (acc_total_direction*180/PI);       //Converts to Radians
-
-//Cases for different cuadrants of operation. See Presentation Slide 12
+  
+//**********************************************************************//
+//Cases for different cuadrants of operation. See Presentation Slide 12//
+//**********************************************************************//
   if (acc_x > 0 && acc_y > 0){
     acc_total_direction = 90 - acc_total_direction; 
   }
@@ -221,7 +236,9 @@ void loop() {
   Serial.print(acc_total_direction);
   Serial.println(" Degrees ");
 
-//Calculating Speed
+//*****************************************//
+//Calculating Speed//
+//*****************************************//
   if (acc_total_direction<0){
     acc_total_magnitude = acc_total_magnitude*-1;
   }
@@ -241,7 +258,9 @@ void loop() {
   Serial.println(" Degrees ");
   Serial.println();
 
-//Calculating Head Rotation
+//*****************************************//
+//Calculating Head Rotation//
+//*****************************************//
   errorZ = 0.00845;                                //0.00845 deg in positive direction = +0.48 in Rad to compesate
   //errorX = -0.00366;                               //0.00366 deg in negative direction = -0.21 in Rad to compesate
   //errorY = 0.01404;                                //0.01404 deg in positive direction = +0.80 in Rad to compesate
@@ -253,6 +272,10 @@ void loop() {
   Serial.print(zRot*180/PI);
   Serial.println(" Degrees ");
   Serial.println();
+  //Serial.print("\t\tUpdated Y Rotation: ");
+  //Serial.print(yRot*180/PI);
+  //Serial.println(" Degrees ");
+  //Serial.println();
   
   // X and Y Rotation is not too important right now because we care more about the rotation of the head.
   //Serial.print("\t\tUpdated X Rotation: ");
