@@ -179,6 +179,9 @@ void loop() {
   //Serial.print(temp.temperature*9/4+32);
   //Serial.println(" deg F");
 
+  acc_x = accel.acceleration.x - 0.08;   // The 0.13 is to offset error
+  acc_y = accel.acceleration.y + 0.36;   // The 0.35 is to ofset error
+  //acc_z = accel.acceleration.z;
 
   /* Display the results (acceleration is measured in m/s^2) */
   Serial.print("\t\tAccel X: ");
@@ -189,16 +192,27 @@ void loop() {
   Serial.print(acc_y);
   //Serial.print(" \tZ: ");
   //Serial.print(accel.acceleration.z);
-  //Serial.println(" m/s^2 ");
-  
-  acc_x = accel.acceleration.x - 0.13;   // The 0.13 is to offset error
-  acc_y = accel.acceleration.y + 0.355;   // The 0.35 is to ofset error
-  //acc_z = accel.acceleration.z;
-  
+  //Serial.println(" m/s^2 ");  
+
 //Calculating acceleration and direction
   acc_total_magnitude = sqrt((acc_x*acc_x)+(acc_y*acc_y));  //Calculate the total accelerometer vector
   acc_total_direction = atan(acc_y/acc_x);                  //Result comes out in Radians
   acc_total_direction = (acc_total_direction*180/PI);       //Converts to Radians
+
+//Cases for different cuadrants of operation. See Presentation Slide 12
+  if (acc_x > 0 && acc_y > 0){
+    acc_total_direction = 90 - acc_total_direction; 
+  }
+  if (acc_x > 0 && acc_y < 0){
+    acc_total_direction = 90 - acc_total_direction; 
+  }
+  if (acc_x < 0 && acc_y < 0){
+    acc_total_direction = 270 - acc_total_direction; 
+  }
+  if (acc_x < 0 && acc_y > 0){
+    acc_total_direction = 270 - acc_total_direction; 
+  }
+
   Serial.println();
   Serial.print("\t\tAccel Mag: ");
   Serial.print(acc_total_magnitude);
@@ -209,7 +223,7 @@ void loop() {
 
 //Calculating Speed
   if (acc_total_direction<0){
-    acc_total_direction = acc_total_magnitude*-1;
+    acc_total_magnitude = acc_total_magnitude*-1;
   }
   velocity = velocity + (acc_total_magnitude*0.25);      //for time we use 0.25 since that is our sample rate
   Serial.println();
