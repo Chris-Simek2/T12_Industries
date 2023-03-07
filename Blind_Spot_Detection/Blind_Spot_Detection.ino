@@ -25,9 +25,6 @@ const int echoPin4 = 9; // Middle-Right Ultrasonic Echo pin: Arduino Uno = 9, Ad
 const int trigPin5 = 10; // Right Ultrasonic Trig pin: Arduino Uno = 10, Adafruit RP2040 = GPIO12
 const int echoPin5 = 11; // Right Ultrasonic Echo pin: Arduino Uno = 11, Adafruit RP2040 = GPIO13
 
-// int distance_Left, distance_ML, distance_Middle, distance_MR, distance_Right;
-
-
 // Matrix containing ALL the curr and prev distances from the ultrasonic sensors
 // FOR TESTING PURPOSES 
 int ultra_matrix[10][1] = {{0},{0},{0},{0},{0},{0},{0},{0},{0},{0}};
