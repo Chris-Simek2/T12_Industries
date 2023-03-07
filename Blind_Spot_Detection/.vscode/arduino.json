@@ -2,5 +2,5 @@
     "port": "COM8",
     "board": "arduino:avr:uno",
     "programmer": "arduinoisp",
-    "sketch": "testtesttest_working.ino"
+    "sketch": "Blind_Spot_Detection.ino"
 }
