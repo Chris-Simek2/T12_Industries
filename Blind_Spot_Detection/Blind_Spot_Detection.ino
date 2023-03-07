@@ -27,7 +27,7 @@ const int echoPin5 = 11; // Right Ultrasonic Echo pin: Arduino Uno = 11, Adafrui
 
 // Matrix containing ALL the curr and prev distances from the ultrasonic sensors
 // FOR TESTING PURPOSES 
-int ultra_matrix[10][1] = {{0},{0},{0},{0},{0},{0},{0},{0},{0},{0}};
+int matrix[10][1] = {{0},{0},{0},{0},{0},{0},{0},{0},{0},{0}};
 
 // Matrix of the current and previous distances from the ultrasonic sensors
 int left_Matrix[2][1] = {{0},{0}};
@@ -55,15 +55,17 @@ void setup()
   pinMode(trigPin5, OUTPUT);
   pinMode(echoPin5, INPUT);
 
-  // LEDs
+  // LED and SPEAKER
   pinMode(LED_PIN, OUTPUT);
+  pinMode(SPEAKER_PIN, OUTPUT);
 }
 
 /* 
   - Function to get the duration of the time from when the trig pin sends
   out a pulse to when the echo pin receives the pulse back.
   - Set the delay to 10ms.
-  - Converting the duration to cm with distance variable.
+  - Converts the duration to cm.
+  - Set Max distance to 450 cm.
 */
 long duration; // pulse length from trig to echo
 int distance = duration * 0.034 / 2; // converting duration to cm
