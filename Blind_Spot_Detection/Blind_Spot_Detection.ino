@@ -105,8 +105,8 @@ bool blindSpotDetection(int currVal, int prevVal) {
 Turns on the LED and Speaker notification system when the blindSpotDectection algorithm 
 detects an object moving within 250cm of the rider.
 */
-void BSD_notification() {
-  if (blindSpotDetection(MR_Matrix[0][0], MR_Matrix[1][0]) == true) {
+void BSD_notification(int currVal, int prevVal) {
+  if (blindSpotDetection(currVal, prevVal) == true) {
     digitalWrite(LED_PIN, HIGH);
     tone(SPEAKER_PIN, 100);
   } else {
@@ -124,27 +124,27 @@ void loop() {
   */
   sonarDistance(trigPin1, echoPin1);
   left_Matrix[1][0] = left_Matrix[0][0];
-  delay(250); 
+  delay(50); 
   left_Matrix[0][0] = distance;
 
   sonarDistance(trigPin2, echoPin2);
   ML_Matrix[1][0] = ML_Matrix[0][0];
-  delay(250); 
+  delay(50); 
   ML_Matrix[0][0] = distance;
 
   sonarDistance(trigPin3, echoPin3);
   middle_Matrix[1][0] = middle_Matrix[0][0];
-  delay(250); 
+  delay(50); 
   middle_Matrix[0][0] = distance;
   
   sonarDistance(trigPin4, echoPin4);
   MR_Matrix[1][0] = MR_Matrix[0][0];
-  delay(250); 
+  delay(50); 
   MR_Matrix[0][0] = distance;
 
   sonarDistance(trigPin5, echoPin5);
   right_Matrix[1][0] = right_Matrix[0][0];
-  delay(250); 
+  delay(50); 
   right_Matrix[0][0] = distance;
 
 
@@ -152,18 +152,39 @@ void loop() {
   - Blind spot dectection algorithm is called for detection.
   */
   blindSpotDetection(left_Matrix[0][0], left_Matrix[1][0]);
-  BSD_notification();
+  BSD_notification(left_Matrix[0][0], left_Matrix[1][0]);
 
   blindSpotDetection(ML_Matrix[0][0], ML_Matrix[1][0]);
-  BSD_notification();
+  BSD_notification(ML_Matrix[0][0], ML_Matrix[1][0]);
 
   blindSpotDetection(middle_Matrix[0][0], middle_Matrix[1][0]);
-  BSD_notification();
+  BSD_notification(middle_Matrix[0][0], middle_Matrix[1][0]);
 
   blindSpotDetection(MR_Matrix[0][0], MR_Matrix[1][0]);
-  BSD_notification();
+  BSD_notification(MR_Matrix[0][0], MR_Matrix[1][0]);
 
   blindSpotDetection(right_Matrix[0][0], right_Matrix[1][0]);
-  BSD_notification();
+  BSD_notification(right_Matrix[0][0], right_Matrix[1][0]);
 
+
+  // PRINTING THE MATRICES FOR TESTING PURPOSES
+  Serial.print(left_Matrix[0][0]);
+  Serial.print("-");
+  Serial.print(left_Matrix[1][0]);
+  Serial.print(" : ");
+  Serial.print(ML_Matrix[0][0]);
+  Serial.print("-");
+  Serial.print(ML_Matrix[1][0]);
+  Serial.print(" : ");
+  Serial.print(middle_Matrix[0][0]);
+  Serial.print("-");
+  Serial.print(middle_Matrix[1][0]);
+  Serial.print(" : ");
+  Serial.print(MR_Matrix[0][0]);
+  Serial.print("-");
+  Serial.print(MR_Matrix[1][0]);
+  Serial.print(" : ");
+  Serial.print(right_Matrix[0][0]);
+  Serial.print("-");
+  Serial.println(right_Matrix[1][0]);
 }
