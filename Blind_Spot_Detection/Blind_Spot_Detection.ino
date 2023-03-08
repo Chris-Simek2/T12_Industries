@@ -25,16 +25,16 @@ const int echoPin4 = 9; // Middle-Right Ultrasonic Echo pin: Arduino Uno = 9, Ad
 const int trigPin5 = 10; // Right Ultrasonic Trig pin: Arduino Uno = 10, Adafruit RP2040 = GPIO12
 const int echoPin5 = 11; // Right Ultrasonic Echo pin: Arduino Uno = 11, Adafruit RP2040 = GPIO13
 
-// Matrix containing ALL the curr and prev distances from the ultrasonic sensors
-// FOR TESTING PURPOSES 
-int matrix[10][1] = {{0},{0},{0},{0},{0},{0},{0},{0},{0},{0}};
+// FOR TESTING PURPOSES
+int matrix4[4][1] = {{0},{0},{0},{0}}; 
+int matrix10[10][1] = {{0},{0},{0},{0},{0},{0},{0},{0},{0},{0}};
 
 // Matrix of the current and previous distances from the ultrasonic sensors
-int left_Matrix[2][1] = {{0},{0}};
-int ML_Matrix[2][1] = {{0},{0}};
-int middle_Matrix[2][1] = {{0},{0}};
-int MR_Matrix[2][1] = {{0},{0}};
-int right_Matrix[2][1] = {{0},{0}};
+int left_Matrix[4][1] = {{0},{0},{0},{0}};
+int ML_Matrix[4][1] = {{0},{0},{0},{0}};
+int middle_Matrix[4][1] = {{0},{0},{0},{0}};
+int MR_Matrix[4][1] = {{0},{0},{0},{0}};
+int right_Matrix[4][1] = {{0},{0},{0},{0}};
 
 
 // Setup the Trig pins to be outputs and the Echo pins to be inputs for all ultrasonic sensors.
@@ -67,6 +67,7 @@ void setup()
   - Converts the duration to cm.
   - Set Max distance to 450 cm.
 */
+
 long duration; // pulse length from trig to echo
 int distance = duration * 0.034 / 2; // converting duration to cm
 void sonarDistance(int trigPin, int echoPin) {
@@ -82,22 +83,21 @@ void sonarDistance(int trigPin, int echoPin) {
   }
 }
 
+
 /*
-- Algorithm for when an object is within 250cm with a +5cm difference
+- Algorithm for when an object is within 250cm with a +5cm addition for accuracy.
 - As an objects currVal and prevVal decrease, the object is getting closer. If so,
 blindSpotDectection return true.
 - As an objects currVal and prevVal increase, the object is moving away. If so,
 blindSpotDectection returns false.
 - An added + or - 5 cm is added to account for accuracy of the ultrasonic sensors.
 */
-bool blindSpotDetection(int currVal, int prevVal) {
-  while (currVal  <= 250 + 5) {
-    if (currVal - prevVal <= 5 || currVal - prevVal >= -5) {
-      if (currVal - prevVal > 5) {
-        return false;
-        } else {
-        return true;
-      }
+bool blindSpotDetection(int currVal, int prevVal1, int prevVal2, int prevVal3) {
+  while (currVal  <= 100) {
+    if (currVal - prevVal1 > 5 && prevVal2 - prevVal3 > 5) {
+      return false;
+    } else {
+      return true;
     }
   }
   return false;
@@ -107,8 +107,8 @@ bool blindSpotDetection(int currVal, int prevVal) {
 Turns on the LED and Speaker notification system when the blindSpotDectection algorithm 
 detects an object moving within 250cm of the rider.
 */
-void BSD_notification(int currVal, int prevVal) {
-  if (blindSpotDetection(currVal, prevVal) == true) {
+void BSD_notification(int currVal, int prevVal1, int prevVal2, int prevVal3) {
+  if (blindSpotDetection(currVal, prevVal1, prevVal2, prevVal3) == true) {
     digitalWrite(LED_PIN, HIGH);
     tone(SPEAKER_PIN, 100);
   } else {
@@ -126,67 +126,79 @@ void loop() {
   */
   sonarDistance(trigPin1, echoPin1);
   left_Matrix[1][0] = left_Matrix[0][0];
-  delay(50); 
+  delay(10); 
   left_Matrix[0][0] = distance;
 
   sonarDistance(trigPin2, echoPin2);
   ML_Matrix[1][0] = ML_Matrix[0][0];
-  delay(50); 
+  delay(10); 
   ML_Matrix[0][0] = distance;
 
   sonarDistance(trigPin3, echoPin3);
   middle_Matrix[1][0] = middle_Matrix[0][0];
-  delay(50); 
+  delay(10); 
   middle_Matrix[0][0] = distance;
   
   sonarDistance(trigPin4, echoPin4);
-  MR_Matrix[1][0] = MR_Matrix[0][0];
-  delay(50); 
-  MR_Matrix[0][0] = distance;
+  for (int i = 3; i > 0; i--){
+    matrix4[i][0] = matrix4[i-1][0];
+  }
+  delay(10);
+  matrix4[0][0] = distance;
+
+  // MR_Matrix[1][0] = MR_Matrix[0][0];
+  // delay(50); 
+  // MR_Matrix[0][0] = distance;
 
   sonarDistance(trigPin5, echoPin5);
   right_Matrix[1][0] = right_Matrix[0][0];
-  delay(50); 
+  delay(10); 
   right_Matrix[0][0] = distance;
 
 
   /*
   - Blind spot dectection algorithm is called for detection.
   */
-  blindSpotDetection(left_Matrix[0][0], left_Matrix[1][0]);
-  BSD_notification(left_Matrix[0][0], left_Matrix[1][0]);
+  // blindSpotDetection(left_Matrix[0][0], left_Matrix[1][0], left_Matrix[2][0], left_Matrix[3][0]);
+  // BSD_notification(left_Matrix[0][0], left_Matrix[1][0], left_Matrix[2][0], left_Matrix[3][0]);
 
-  blindSpotDetection(ML_Matrix[0][0], ML_Matrix[1][0]);
-  BSD_notification(ML_Matrix[0][0], ML_Matrix[1][0]);
+  // blindSpotDetection(ML_Matrix[0][0], ML_Matrix[1][0], ML_Matrix[2][0], ML_Matrix[3][0]);
+  // BSD_notification(ML_Matrix[0][0], ML_Matrix[1][0], ML_Matrix[2][0], ML_Matrix[3][0]);
 
-  blindSpotDetection(middle_Matrix[0][0], middle_Matrix[1][0]);
-  BSD_notification(middle_Matrix[0][0], middle_Matrix[1][0]);
+  // blindSpotDetection(middle_Matrix[0][0], middle_Matrix[1][0], middle_Matrix[2][0], middle_Matrix[3][0]);
+  // BSD_notification(middle_Matrix[0][0], middle_Matrix[1][0], middle_Matrix[2][0], middle_Matrix[3][0]);
 
-  blindSpotDetection(MR_Matrix[0][0], MR_Matrix[1][0]);
-  BSD_notification(MR_Matrix[0][0], MR_Matrix[1][0]);
+  blindSpotDetection(MR_Matrix[0][0], MR_Matrix[1][0], MR_Matrix[2][0], MR_Matrix[3][0]);
+  BSD_notification(MR_Matrix[0][0], MR_Matrix[1][0], MR_Matrix[2][0], MR_Matrix[3][0]);
 
-  blindSpotDetection(right_Matrix[0][0], right_Matrix[1][0]);
-  BSD_notification(right_Matrix[0][0], right_Matrix[1][0]);
+  // blindSpotDetection(right_Matrix[0][0], right_Matrix[1][0], right_Matrix[2][0], right_Matrix[3][0]);
+  // BSD_notification(right_Matrix[0][0], right_Matrix[1][0], right_Matrix[2][0], right_Matrix[3][0]);
 
 
   // PRINTING THE MATRICES FOR TESTING PURPOSES
-  Serial.print(left_Matrix[0][0]);
-  Serial.print("-");
-  Serial.print(left_Matrix[1][0]);
-  Serial.print(" : ");
-  Serial.print(ML_Matrix[0][0]);
-  Serial.print("-");
-  Serial.print(ML_Matrix[1][0]);
-  Serial.print(" : ");
-  Serial.print(middle_Matrix[0][0]);
-  Serial.print("-");
-  Serial.print(middle_Matrix[1][0]);
-  Serial.print(" : ");
-  Serial.print(MR_Matrix[0][0]);
-  Serial.print("-");
-  Serial.print(MR_Matrix[1][0]);
-  Serial.print(" : ");
-  Serial.print(right_Matrix[0][0]);
-  Serial.print("-");
-  Serial.println(right_Matrix[1][0]);
+  for (int i = 0; i < 3; i++) {
+    Serial.print(MR_Matrix[i][0]);
+    Serial.print("-");
+  }
+  Serial.println(MR_Matrix[3][0]);
+
+  // Serial.print(left_Matrix[0][0]);
+  // Serial.print("-");
+  // Serial.print(left_Matrix[1][0]);
+  // Serial.print(" : ");
+  // Serial.print(ML_Matrix[0][0]);
+  // Serial.print("-");
+  // Serial.print(ML_Matrix[1][0]);
+  // Serial.print(" : ");
+  // Serial.print(middle_Matrix[0][0]);
+  // Serial.print("-");
+  // Serial.print(middle_Matrix[1][0]);
+  // Serial.print(" : ");
+  // Serial.print(MR_Matrix[0][0]);
+  // Serial.print("-");
+  // Serial.print(MR_Matrix[1][0]);
+  // Serial.print(" : ");
+  // Serial.print(right_Matrix[0][0]);
+  // Serial.print("-");
+  // Serial.println(right_Matrix[1][0]);
 }
