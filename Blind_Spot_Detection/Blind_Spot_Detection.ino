@@ -10,20 +10,20 @@
 /* ALWAYS UPDATE THE LAST REVISED AUTHOR AFTER EDITING THE FILE!*/
 
 // Both LED and SPEAKER pin numbers
-const int LED_PIN = 13; // LED PIN: Arduino Uno = 13, Adafruit RP2040 = GPIO1
-const int SPEAKER_PIN = 12; // SPEAKER PIN: Arduino Uno = 12, Adafruit RP2040 = GPIO0
+const int LED_PIN = 1; // LED PIN: Arduino Uno = 13, Adafruit RP2040 = GPIO1
+const int SPEAKER_PIN = 0; // SPEAKER PIN: Arduino Uno = 12, Adafruit RP2040 = GPIO0
 
 // Ultrasonic sensors trig and echo pin numbers
 const int trigPin1 = 2; // Left Ultrasonic Trig pin: Arduino Uno = 2, Adafruit RP2040 = GPIO2
 const int echoPin1 = 3; // Left Ultrasonic Echo pin: Arduino Uno = 3, Adafruit RP2040 = GPIO3
-const int trigPin2 = 4; // Middle-Left Ultrasonic Trig pin: Arduino Uno = 4, Adafruit RP2040 = GPIO6
-const int echoPin2 = 5; // Middle-Left Ultrasonic Echo pin: Arduino Uno = 5, Adafruit RP2040 = GPIO7
-const int trigPin3 = 6; // Middle Ultrasonic Trig pin: Arduino Uno = 6, Adafruit RP2040 = GPIO8
-const int echoPin3 = 7; // Middle Ultrasonic Echo pin: Arduino Uno = 7, Adafruit RP2040 = GPIO9
-const int trigPin4 = 8; // Middle-Right Ultrasonic Trig pin: Arduino Uno = 8, Adafruit RP2040 = GPIO10
-const int echoPin4 = 9; // Middle-Right Ultrasonic Echo pin: Arduino Uno = 9, Adafruit RP2040 = GPIO11
-const int trigPin5 = 10; // Right Ultrasonic Trig pin: Arduino Uno = 10, Adafruit RP2040 = GPIO12
-const int echoPin5 = 11; // Right Ultrasonic Echo pin: Arduino Uno = 11, Adafruit RP2040 = GPIO13
+const int trigPin2 = 6; // Middle-Left Ultrasonic Trig pin: Arduino Uno = 4, Adafruit RP2040 = GPIO6
+const int echoPin2 = 7; // Middle-Left Ultrasonic Echo pin: Arduino Uno = 5, Adafruit RP2040 = GPIO7
+const int trigPin3 = 8; // Middle Ultrasonic Trig pin: Arduino Uno = 6, Adafruit RP2040 = GPIO8
+const int echoPin3 = 9; // Middle Ultrasonic Echo pin: Arduino Uno = 7, Adafruit RP2040 = GPIO9
+const int trigPin4 = 10; // Middle-Right Ultrasonic Trig pin: Arduino Uno = 8, Adafruit RP2040 = GPIO10
+const int echoPin4 = 11; // Middle-Right Ultrasonic Echo pin: Arduino Uno = 9, Adafruit RP2040 = GPIO11
+const int trigPin5 = 12; // Right Ultrasonic Trig pin: Arduino Uno = 10, Adafruit RP2040 = GPIO12
+const int echoPin5 = 13; // Right Ultrasonic Echo pin: Arduino Uno = 11, Adafruit RP2040 = GPIO13
 
 // FOR TESTING PURPOSES
 int matrix4[4][1] = {{0},{0},{0},{0}}; 
@@ -93,7 +93,7 @@ blindSpotDectection returns false.
 - An added + or - 5 cm is added to account for accuracy of the ultrasonic sensors.
 */
 bool blindSpotDetection(int currVal, int prevVal1, int prevVal2, int prevVal3) {
-  while (currVal  <= 100) {
+  while (currVal  <= 240) {
     if (currVal - prevVal1 > 5 && prevVal2 - prevVal3 > 5) {
       return false;
     } else {
@@ -135,9 +135,15 @@ void loop() {
   ML_Matrix[0][0] = distance;
 
   sonarDistance(trigPin3, echoPin3);
-  middle_Matrix[1][0] = middle_Matrix[0][0];
-  delay(10); 
+  for (int i = 3; i > 0; i--){
+    middle_Matrix[i][0] = middle_Matrix[i-1][0];
+  }
+  delay(10);
   middle_Matrix[0][0] = distance;
+
+  // middle_Matrix[1][0] = middle_Matrix[0][0];
+  // delay(10); 
+  // middle_Matrix[0][0] = distance;
   
   sonarDistance(trigPin4, echoPin4);
   for (int i = 3; i > 0; i--){
@@ -165,11 +171,11 @@ void loop() {
   // blindSpotDetection(ML_Matrix[0][0], ML_Matrix[1][0], ML_Matrix[2][0], ML_Matrix[3][0]);
   // BSD_notification(ML_Matrix[0][0], ML_Matrix[1][0], ML_Matrix[2][0], ML_Matrix[3][0]);
 
-  // blindSpotDetection(middle_Matrix[0][0], middle_Matrix[1][0], middle_Matrix[2][0], middle_Matrix[3][0]);
-  // BSD_notification(middle_Matrix[0][0], middle_Matrix[1][0], middle_Matrix[2][0], middle_Matrix[3][0]);
+  blindSpotDetection(middle_Matrix[0][0], middle_Matrix[1][0], middle_Matrix[2][0], middle_Matrix[3][0]);
+  BSD_notification(middle_Matrix[0][0], middle_Matrix[1][0], middle_Matrix[2][0], middle_Matrix[3][0]);
 
-  blindSpotDetection(MR_Matrix[0][0], MR_Matrix[1][0], MR_Matrix[2][0], MR_Matrix[3][0]);
-  BSD_notification(MR_Matrix[0][0], MR_Matrix[1][0], MR_Matrix[2][0], MR_Matrix[3][0]);
+  // blindSpotDetection(MR_Matrix[0][0], MR_Matrix[1][0], MR_Matrix[2][0], MR_Matrix[3][0]);
+  // BSD_notification(MR_Matrix[0][0], MR_Matrix[1][0], MR_Matrix[2][0], MR_Matrix[3][0]);
 
   // blindSpotDetection(right_Matrix[0][0], right_Matrix[1][0], right_Matrix[2][0], right_Matrix[3][0]);
   // BSD_notification(right_Matrix[0][0], right_Matrix[1][0], right_Matrix[2][0], right_Matrix[3][0]);
@@ -177,10 +183,10 @@ void loop() {
 
   // PRINTING THE MATRICES FOR TESTING PURPOSES
   for (int i = 0; i < 3; i++) {
-    Serial.print(MR_Matrix[i][0]);
+    Serial.print(middle_Matrix[i][0]);
     Serial.print("-");
   }
-  Serial.println(MR_Matrix[3][0]);
+  Serial.println(middle_Matrix[3][0]);
 
   // Serial.print(left_Matrix[0][0]);
   // Serial.print("-");
