@@ -16,9 +16,9 @@
             ],
             "intelliSenseMode": "gcc-x64",
             "includePath": [
-                "C:\\Users\\chris\\AppData\\Local\\Arduino15\\packages\\rp2040\\hardware\\rp2040\\3.0.0\\include",
-                "C:\\Users\\chris\\AppData\\Local\\Arduino15\\packages\\rp2040\\hardware\\rp2040\\3.0.0\\cores\\rp2040",
-                "C:\\Users\\chris\\AppData\\Local\\Arduino15\\packages\\rp2040\\hardware\\rp2040\\3.0.0\\variants\\adafruit_feather",
+                "C:\\Users\\chris\\AppData\\Local\\Arduino15\\packages\\rp2040\\hardware\\rp2040\\3.1.0\\include",
+                "C:\\Users\\chris\\AppData\\Local\\Arduino15\\packages\\rp2040\\hardware\\rp2040\\3.1.0\\cores\\rp2040",
+                "C:\\Users\\chris\\AppData\\Local\\Arduino15\\packages\\rp2040\\hardware\\rp2040\\3.1.0\\variants\\adafruit_feather",
                 "c:\\users\\chris\\appdata\\local\\arduino15\\packages\\rp2040\\tools\\pqt-gcc\\1.5.0-b-c7bab52\\arm-none-eabi\\include\\c++\\10.3.0",
                 "c:\\users\\chris\\appdata\\local\\arduino15\\packages\\rp2040\\tools\\pqt-gcc\\1.5.0-b-c7bab52\\arm-none-eabi\\include\\c++\\10.3.0\\arm-none-eabi\\thumb",
                 "c:\\users\\chris\\appdata\\local\\arduino15\\packages\\rp2040\\tools\\pqt-gcc\\1.5.0-b-c7bab52\\arm-none-eabi\\include\\c++\\10.3.0\\backward",
@@ -27,7 +27,7 @@
                 "c:\\users\\chris\\appdata\\local\\arduino15\\packages\\rp2040\\tools\\pqt-gcc\\1.5.0-b-c7bab52\\arm-none-eabi\\include"
             ],
             "forcedInclude": [
-                "C:\\Users\\chris\\AppData\\Local\\Arduino15\\packages\\rp2040\\hardware\\rp2040\\3.0.0\\cores\\rp2040\\Arduino.h"
+                "C:\\Users\\chris\\AppData\\Local\\Arduino15\\packages\\rp2040\\hardware\\rp2040\\3.1.0\\cores\\rp2040\\Arduino.h"
             ],
             "cStandard": "c11",
             "cppStandard": "c++17",

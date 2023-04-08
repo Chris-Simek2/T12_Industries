@@ -1,7 +1,4 @@
 {
     "port": "COM7",
-    "board": "rp2040:rp2040:adafruit_feather",
-    "programmer": "arduinoisp",
-    "sketch": "Blind_Spot_Detection.ino",
-    "configuration": "flash=8388608_0,freq=133,opt=Small,rtti=Disabled,stackprotect=Disabled,exceptions=Enabled,dbgport=Disabled,dbglvl=None,usbstack=picosdk,ipbtstack=ipv4only,uploadmethod=default"
+    "board": "rp2040:rp2040:adafruit_feather"
 }
